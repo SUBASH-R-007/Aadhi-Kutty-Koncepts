@@ -15,8 +15,9 @@ test("create project → paste source → generate → approve → visual → ex
   await page.getByLabel("College name").fill("Rajalakshmi Engineering College");
   await page.getByRole("button", { name: "Create project" }).click();
 
-  // Paste source material
-  await expect(page.getByLabel("Pasted learning material")).toBeVisible();
+  // Paste source material (first-hit route compilation under dev can be slow)
+  await page.waitForURL(/\/projects\/.+\/source/, { timeout: 60_000 });
+  await expect(page.getByLabel("Pasted learning material")).toBeVisible({ timeout: 30_000 });
   await page.getByLabel("Pasted learning material").fill(
     [
       "# Photosynthesis",
