@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id                String           @id @default(cuid())
+  name              String
+  subject           String
+  audience          String
+  learningGoals     String
+  tone              String
+  targetPageCount   Int              @default(8)
+  aspectRatio       String           @default("16:9") // 16:9 | 4:3 | A4 | 1:1 | custom
+  pageWidth         Int              @default(1920)
+  pageHeight        Int              @default(1080)
+  collegeName       String
+  brandColors       Json             @default("[]") // string[] hex
+  textProvider      String           @default("mock") // openai | gemini | mock
+  imageProvider     String           @default("mock") // openai | mock
+  imageStyle        String           @default("") // free-text style preset for visuals
+  status            String           @default("draft")
+  templateId        String?
+  template          Template?        @relation(fields: [templateId], references: [id])
+  creativeContextId String?
+  creativeContext   CreativeContext? @relation(fields: [creativeContextId], references: [id])
+  sources           SourceDocument[]
+  pages             Page[]
+  jobs              GenerationJob[]
+  exports           ExportArtifact[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+model SourceDocument {
+  id            String        @id @default(cuid())
+  projectId     String
+  project       Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  filename      String
+  kind          String // paste | txt | md | pdf | docx | pptx
+  status        String        @default("extracted") // extracted | unreadable
+  warning       String?
+  rawAssetKey   String?
+  extractedText String        @default("")
+  chunks        SourceChunk[]
+  createdAt     DateTime      @default(now())
+}
+
+model SourceChunk {
+  id         String         @id @default(cuid())
+  documentId String
+  document   SourceDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  index      Int
+  text       String
+  sourceRef  String // e.g. "notes.pdf p.3", "slides.pptx slide 5", "Section: Osmosis"
+  charCount  Int            @default(0)
+}
+
+model Page {
+  id            String        @id @default(cuid())
+  projectId     String
+  project       Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  index         Int
+  chunkIds      Json          @default("[]") // SourceChunk ids this page was built from (enables single-page regeneration)
+  visualLocked  Boolean       @default(false)
+  activeVisualId String?
+  variants      PageVariant[]
+  visuals       PageVisual[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model PageVariant {
+  id                 String               @id @default(cuid())
+  pageId             String
+  page               Page                 @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  level              String // novice | advanced
+  title              String               @default("")
+  learningObjective  String               @default("")
+  blocks             Json                 @default("[]") // {heading?, body}[]
+  keyTakeaway        String               @default("")
+  exampleActivity    String               @default("")
+  glossary           Json                 @default("[]") // {term, definition}[]
+  sourceRefs         Json                 @default("[]") // string[]
+  visualBrief        String               @default("")
+  aadhiRole          String               @default("")
+  aadhiPose          String               @default("pointing")
+  aadhiExpression    String               @default("friendly-smile")
+  aadhiPlacement     String               @default("beside-visual")
+  insufficientSource Boolean              @default(false)
+  approvedAt         DateTime?
+  versions           PageVariantVersion[]
+  updatedAt          DateTime             @updatedAt
+
+  @@unique([pageId, level])
+}
+
+model PageVariantVersion {
+  id        String      @id @default(cuid())
+  variantId String
+  variant   PageVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  snapshot  Json
+  note      String      @default("")
+  createdAt DateTime    @default(now())
+}
+
+model Template {
+  id        String    @id @default(cuid())
+  name      String
+  version   Int       @default(1)
+  assetKey  String? // background image; null = plain background
+  width     Int
+  height    Int
+  zones     Json // Record<zoneKey, {x,y,w,h}> normalized 0..1
+  projects  Project[]
+  createdAt DateTime  @default(now())
+}
+
+model CreativeContext {
+  id        String    @id @default(cuid())
+  name      String
+  version   Int
+  data      Json // structured CreativeContext record
+  projects  Project[]
+  createdAt DateTime  @default(now())
+
+  @@unique([name, version])
+}
+
+model CharacterBible {
+  id        String   @id @default(cuid())
+  version   Int      @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
+model AadhiReference {
+  id        String   @id @default(cuid())
+  assetKey  String
+  filename  String
+  notes     String   @default("")
+  createdAt DateTime @default(now())
+}
+
+model PageVisual {
+  id                  String   @id @default(cuid())
+  pageId              String
+  page                Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  version             Int
+  level               String // which variant it was composed from
+  prompt              String   @default("")
+  illustrationAssetKey String?
+  composedAssetKey    String?
+  status              String   @default("pending") // pending | generating | complete | failed
+  error               String?
+  createdAt           DateTime @default(now())
+}
+
+model GenerationJob {
+  id        String   @id @default(cuid())
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  type      String // generate-content | regenerate-page | generate-visual | export
+  payload   Json
+  status    String   @default("queued") // queued | running | complete | failed
+  progress  Int      @default(0)
+  message   String   @default("")
+  result    Json?
+  error     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ExportArtifact {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  levels    String // novice | advanced | both
+  format    String   @default("pdf")
+  assetKey  String
+  createdAt DateTime @default(now())
+}
+
+model AppConfig {
+  key   String @id
+  value Json
+}

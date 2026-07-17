@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: aadhi
+      POSTGRES_PASSWORD: aadhi
+      POSTGRES_DB: aadhi_studio
+    ports:
+      - "5433:5432"
+    volumes:
+      - aadhi_pgdata:/var/lib/postgresql/data
+
+volumes:
+  aadhi_pgdata:
