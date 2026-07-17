@@ -25,28 +25,28 @@ export const defaultCharacterBible: CharacterBibleData = {
   name: "Aadhi",
   species: "anthropomorphic blackbuck (Antilope cervicapra)",
   personality:
-    "Warm, curious, encouraging, slightly playful but never distracting; a patient peer-tutor who points, demonstrates, reacts and celebrates learner progress.",
+    "Warm, curious, encouraging, sporty and slightly playful but never distracting; a patient peer-tutor who points, demonstrates, reacts and celebrates learner progress.",
   clothing:
-    "College uniform: navy blazer with college crest on the left breast pocket, white shirt, sand-colored chinos, no shoes (hooves).",
+    "Rajalakshmi Engineering College varsity kit: purple letterman/varsity jacket with gold trim and ribbed cuffs, a gold torch-'R' college emblem on the left chest, matching purple track/jogger pants, and purple-and-gold sneakers. Sporty purple goggles/glasses resting on the brow.",
   colorPalette: [
-    "#2B1D16",
-    "#171003",
+    "#5A277F",
+    "#7A3FA0",
+    "#F4A81D",
+    "#A9744F",
+    "#6B4226",
+    "#F3E4CE",
     "#FAF7F2",
-    "#1F3A5F",
-    "#FFFFFF",
-    "#D9C7A0",
-    "#E8A13D",
   ],
   proportions:
-    "Bipedal, about 5 heads tall, slim athletic build, digitigrade legs with neat black hooves, four fingers plus thumb per hand.",
+    "Bipedal, about 5 heads tall, slim athletic build, digitigrade legs with neat dark hooves, four fingers plus thumb per hand.",
   horns:
-    "Two long spiral (helical) horns, perfectly symmetric, 2.5 twists, dark charcoal, rising in a shallow V. Never asymmetric, broken, or more than two.",
+    "Two long ridged, gently spiraled blackbuck horns, symmetric, angled back in a shallow V, warm grey-brown. Never asymmetric, broken, or more than two.",
   faceAndEyes:
-    "Large friendly almond eyes, dark irises with a single white highlight, small dark nose, gentle smile by default.",
+    "Large friendly almond eyes with dark irises and a single white highlight, small dark nose, gentle smile by default; sporty purple goggles sit on the brow.",
   markings:
-    "Dark brown-black upper body; white underside, chest and inner limbs; white eye-rings, white muzzle patch, white chin. Identical on every page.",
+    "Warm tan-brown coat; cream muzzle, inner ears, chest and brow; slightly darker brown around the eyes; white chin. Markings are identical on every page.",
   illustrationStyle:
-    "Flat vector illustration with soft shading, clean consistent outlines, minimal gradients, friendly rounded shapes. No photorealism, no 3D render, no anime.",
+    "Friendly, approachable 3D Pixar-style character render with soft lighting and clean shapes (or a matching flat-vector treatment for diagram pages). Consistent look across pages. No photorealism of a real animal, no anime, no gritty style.",
   commonPoses: [
     "pointing",
     "presenting-with-open-palm",
@@ -70,14 +70,16 @@ export const defaultCharacterBible: CharacterBibleData = {
     "college satchel",
     "pointer stick",
     "tablet",
+    "sporty purple goggles/glasses",
     "safety goggles (lab pages only)",
     "graduation cap (celebration pages only)",
   ],
   forbiddenChanges: [
-    "No clothing changes outside the character bible",
+    "No clothing changes outside the character bible (always the purple-and-gold varsity kit)",
     "No horn shape, count, or symmetry changes",
     "No changes to facial or body markings",
     "No species drift (no deer, goat, or generic antelope look)",
+    "No color changes to the purple jacket or gold trim",
     "No violent, romantic, or off-brand contexts",
   ],
   clearSpaceRules:

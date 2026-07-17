@@ -5,7 +5,13 @@ import { getRenderer, type RenderSpec } from "@/lib/render";
 import { getAppConfig } from "@/lib/config";
 import { characterBibleSchema, defaultCharacterBible } from "@/lib/characterBible";
 import { creativeContextSchema } from "@/lib/creativeContext/schema";
-import { zonesSchema, type ContentBlock, type Zones } from "@/lib/content/schemas";
+import {
+  zonesSchema,
+  type Callout,
+  type ContentBlock,
+  type KnowledgeCheckItem,
+  type Zones,
+} from "@/lib/content/schemas";
 import { defaultZones } from "@/lib/templates";
 import { buildIllustrationBrief } from "./brief";
 import type { JobContext } from "@/lib/queue/types";
@@ -46,7 +52,13 @@ async function loadCharacterBible() {
 export async function generatePageVisual(
   payload: GenerateVisualPayload,
   ctx: JobContext,
-): Promise<{ visualId: string; warning?: string }> {
+): Promise<{
+  visualId: string;
+  warning?: string;
+  provider: string;
+  referencesAttached: number;
+  referencesAvailable: number;
+}> {
   const page = await prisma.page.findUniqueOrThrow({
     where: { id: payload.pageId },
     include: { project: { include: { template: true, creativeContext: true } }, variants: true },
@@ -92,9 +104,20 @@ export async function generatePageVisual(
     extraInstructions: payload.extraInstructions,
   });
 
+  const approvedReferenceCount = await prisma.aadhiReference.count();
   const references = provider.supportsReferenceImages
     ? await loadAadhiReferences()
     : [];
+  const referenceNote =
+    references.length > 0
+      ? `${references.length} Aadhi reference image(s) attached to the ${provider.name} request`
+      : provider.supportsReferenceImages
+        ? `no Aadhi reference images uploaded — none attached`
+        : `${approvedReferenceCount} Aadhi reference(s) available, but the ${provider.name} provider does not use reference images (set an OpenAI/Gemini key to send them)`;
+  await ctx.progress(
+    15,
+    `Illustrating page ${page.index + 1} via ${provider.name} — ${referenceNote}`,
+  );
   const illustration = await provider.generateIllustration({
     prompt: brief.prompt,
     negativePrompt: brief.negativePrompt,
@@ -132,7 +155,13 @@ export async function generatePageVisual(
     where: { id: page.id },
     data: { activeVisualId: visual.id },
   });
-  return { visualId: visual.id, warning };
+  return {
+    visualId: visual.id,
+    warning,
+    provider: provider.name,
+    referencesAttached: references.length,
+    referencesAvailable: approvedReferenceCount,
+  };
 }
 
 async function loadAadhiReferences() {
@@ -168,6 +197,14 @@ export async function composePage(
       backgroundImage = undefined;
     }
   }
+  let logoImage: Buffer | undefined;
+  if (project.logoAssetKey) {
+    try {
+      logoImage = await storage.get(project.logoAssetKey);
+    } catch {
+      logoImage = undefined;
+    }
+  }
 
   const spec: RenderSpec = {
     width: project.pageWidth,
@@ -175,11 +212,15 @@ export async function composePage(
     backgroundColor: "#FFFFFF",
     backgroundImage,
     illustrationPng,
+    logoImage,
     zones,
     title: variant.title,
+    whyLearn: variant.whyLearn,
     blocks: (variant.blocks as ContentBlock[]) ?? [],
+    callouts: (variant.callouts as Callout[]) ?? [],
     keyTakeaway: variant.keyTakeaway,
     exampleActivity: variant.exampleActivity,
+    knowledgeCheck: (variant.knowledgeCheck as KnowledgeCheckItem[]) ?? [],
     headerText: `${project.subject} · ${variant.level === "novice" ? "Foundations" : "Advanced"}`,
     footerText: project.collegeName,
     pageNumber: String(pageIndex + 1),

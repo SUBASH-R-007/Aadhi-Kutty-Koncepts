@@ -24,8 +24,8 @@ export default function NewProjectPage() {
     tone: "friendly and encouraging",
     targetPageCount: 8,
     aspectRatio: "16:9",
-    collegeName: "",
-    brandColorsText: "#1F3A5F, #E8A13D, #FAF7F2",
+    collegeName: "Rajalakshmi Engineering College",
+    brandColorsText: "#5A277F, #F4A81D, #FAF7F2",
     textProvider: "mock",
     imageProvider: "mock",
     imageStyle: "flat vector educational illustration, soft shading, clean outlines",
@@ -127,9 +127,10 @@ export default function NewProjectPage() {
               <option value="mock">Mock (no key needed)</option>
             </Select>
           </Field>
-          <Field label="Image generation provider" htmlFor="image-provider">
+          <Field label="Image generation provider" htmlFor="image-provider" hint="Both send the Aadhi reference images for mascot conditioning">
             <Select id="image-provider" value={form.imageProvider} onChange={(e) => set("imageProvider", e.target.value)}>
               <option value="openai">OpenAI images</option>
+              <option value="gemini">Gemini images</option>
               <option value="mock">Mock (no key needed)</option>
             </Select>
           </Field>

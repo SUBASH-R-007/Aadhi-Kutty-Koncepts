@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useCallback, useEffect, useState } from "react";
-import { getJSON, patchJSON, upload } from "@/lib/clientApi";
+import { del, getJSON, patchJSON, upload } from "@/lib/clientApi";
 import type { ProjectDto, TemplateDto } from "@/lib/uiTypes";
 import type { Zones } from "@/lib/content/schemas";
 import { defaultZones } from "@/lib/templates";
@@ -67,6 +67,31 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
       await reload();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not select template");
+    }
+  }
+
+  async function uploadLogo(file: File) {
+    setBusy(true);
+    setError(null);
+    try {
+      const form = new FormData();
+      form.set("file", file);
+      await upload(`/api/projects/${id}/logo`, form);
+      await reload();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Logo upload failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function removeLogo() {
+    setError(null);
+    try {
+      await del(`/api/projects/${id}/logo`);
+      await reload();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not remove logo");
     }
   }
 
@@ -138,6 +163,40 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
           )}
         </Card>
       </div>
+
+      <Card title="College logo">
+        <p className="mb-2 text-sm text-slate-600">
+          PNG / JPEG / SVG. Composited deterministically into the template&apos;s{" "}
+          <strong>logo</strong> safe zone on every page (never redrawn by the image model).
+        </p>
+        <div className="flex items-center gap-4">
+          {project.logoAssetKey ? (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={assetUrl(project.logoAssetKey)}
+                alt="College logo"
+                className="h-16 rounded border border-slate-200 bg-white object-contain p-1"
+              />
+              <Button size="sm" variant="danger" onClick={removeLogo}>
+                Remove logo
+              </Button>
+            </>
+          ) : (
+            <input
+              type="file"
+              accept=".png,.jpg,.jpeg,.svg"
+              aria-label="Upload college logo"
+              className="block text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-700 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) void uploadLogo(file);
+                e.target.value = "";
+              }}
+            />
+          )}
+        </div>
+      </Card>
 
       <Card
         title="Safe zones"

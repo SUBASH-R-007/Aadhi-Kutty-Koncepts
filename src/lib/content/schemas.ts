@@ -16,13 +16,40 @@ export const glossaryEntrySchema = z.object({
   definition: z.string(),
 });
 
+/** Callout box, mirroring the illustrated-skills' Pro-Tip / Fun Fact / etc. */
+export const calloutTypes = [
+  "Pro-Tip",
+  "Fun Fact",
+  "Wait, Why?",
+  "Key Insight",
+  "Common Pitfall",
+  "Exam Tip",
+] as const;
+export const calloutSchema = z.object({
+  type: z.string().default("Pro-Tip"),
+  body: z.string(),
+});
+export type Callout = z.infer<typeof calloutSchema>;
+
+export const knowledgeCheckSchema = z.object({
+  question: z.string(),
+  answer: z.string().default(""),
+  kind: z
+    .enum(["recall", "understanding", "application", "challenge"])
+    .default("recall"),
+});
+export type KnowledgeCheckItem = z.infer<typeof knowledgeCheckSchema>;
+
 export const pageVariantContentSchema = z.object({
   title: z.string().min(1),
   learningObjective: z.string().default(""),
+  whyLearn: z.string().default(""),
   blocks: z.array(contentBlockSchema).min(1),
+  callouts: z.array(calloutSchema).default([]),
   keyTakeaway: z.string().default(""),
   exampleActivity: z.string().default(""),
   glossary: z.array(glossaryEntrySchema).default([]),
+  knowledgeCheck: z.array(knowledgeCheckSchema).default([]),
   sourceRefs: z.array(z.string()).default([]),
   visualBrief: z.string().default(""),
   aadhiRole: z.string().default(""),

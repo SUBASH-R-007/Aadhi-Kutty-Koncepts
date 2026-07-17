@@ -23,23 +23,32 @@ const run = async () => {
     illustrationPng: illustration,
     zones: defaultZones(1920, 1080),
     title: "Photosynthesis: turning light into food",
+    whyLearn: "You'll use this every time you wonder how plants feed themselves and make the oxygen you breathe.",
     blocks: [
       {
         heading: "In simple terms",
         body: "Plants capture sunlight with chlorophyll and use it to turn water and carbon dioxide into glucose and oxygen.",
       },
       {
-        heading: "Step by step",
+        heading: "A little more",
         body: "Light reactions split water and make ATP and NADPH; the Calvin cycle then fixes carbon dioxide into sugars.",
       },
     ],
+    callouts: [
+      { type: "Fun Fact", body: "A large tree can release enough oxygen in a day for two people." },
+      { type: "Wait, Why?", body: "Leaves look green because chlorophyll reflects green light while absorbing red and blue." },
+    ],
     keyTakeaway: "Light energy becomes chemical energy stored in glucose.",
     exampleActivity: "Explain to a friend why leaves are green using the word chlorophyll.",
+    knowledgeCheck: [
+      { question: "What gas do plants release during photosynthesis?", answer: "Oxygen.", kind: "recall" },
+      { question: "Fill in the blank: chlorophyll absorbs ______ to power the reaction.", answer: "light", kind: "recall" },
+    ],
     headerText: "Plant Biology · Foundations",
     footerText: "Rajalakshmi Engineering College",
     pageNumber: "1",
     sourceNote: "notes.md — Section: Photosynthesis",
-    brand: { primary: "#1F3A5F", accent: "#E8A13D", paper: "#FAF7F2" },
+    brand: { primary: "#5A277F", accent: "#F4A81D", paper: "#FAF7F2" },
   });
   writeFileSync(".storage/render-smoke.png", png);
   console.log("COMPOSED_OK bytes=", png.length);

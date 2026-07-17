@@ -1,4 +1,4 @@
-import type { ContentBlock, Zones } from "@/lib/content/schemas";
+import type { Callout, ContentBlock, KnowledgeCheckItem, Zones } from "@/lib/content/schemas";
 
 export type RenderSpec = {
   width: number;
@@ -7,11 +7,16 @@ export type RenderSpec = {
   /** Rasterized template background (PNG/JPEG/SVG bytes), stretched to the page. */
   backgroundImage?: Buffer;
   illustrationPng?: Buffer;
+  /** College logo (PNG/JPEG/SVG bytes) drawn into the logo zone. */
+  logoImage?: Buffer;
   zones: Zones;
   title: string;
+  whyLearn: string;
   blocks: ContentBlock[];
+  callouts: Callout[];
   keyTakeaway: string;
   exampleActivity: string;
+  knowledgeCheck: KnowledgeCheckItem[];
   headerText: string;
   footerText: string;
   pageNumber: string;

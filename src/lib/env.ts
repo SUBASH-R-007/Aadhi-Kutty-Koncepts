@@ -19,6 +19,7 @@ const envSchema = z.object({
   OPENAI_TEXT_MODEL: z.string().default("gpt-4o-mini"),
   GEMINI_TEXT_MODEL: z.string().default("gemini-2.0-flash"),
   OPENAI_IMAGE_MODEL: z.string().default("gpt-image-1"),
+  GEMINI_IMAGE_MODEL: z.string().default("gemini-2.5-flash-image"),
   QUEUE_DRIVER: z.enum(["inprocess"]).default("inprocess"),
 });
 

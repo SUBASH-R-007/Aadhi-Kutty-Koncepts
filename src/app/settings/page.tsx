@@ -12,6 +12,7 @@ type ConfigResponse = {
     openaiTextModel: string;
     geminiTextModel: string;
     openaiImageModel: string;
+    geminiImageModel: string;
     negativeConstraints: string[];
   };
   providers: {
@@ -72,7 +73,7 @@ function ModelsCard() {
     >
       <ErrorNote message={error} />
       {saved && <p className="mb-2 text-xs text-green-700">Saved.</p>}
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2">
         <Field label="OpenAI text model" htmlFor="otm" hint={providers.openaiTextAvailable ? "key configured" : "no OPENAI_API_KEY — mock fallback"}>
           <Input id="otm" value={config.openaiTextModel} onChange={(e) => set("openaiTextModel", e.target.value)} />
         </Field>
@@ -81,6 +82,9 @@ function ModelsCard() {
         </Field>
         <Field label="OpenAI image model" htmlFor="oim" hint={providers.openaiImageAvailable ? "key configured" : "no OPENAI_API_KEY — mock fallback"}>
           <Input id="oim" value={config.openaiImageModel} onChange={(e) => set("openaiImageModel", e.target.value)} />
+        </Field>
+        <Field label="Gemini image model" htmlFor="gim" hint={providers.geminiTextAvailable ? "key configured" : "no GEMINI_API_KEY — mock fallback"}>
+          <Input id="gim" value={config.geminiImageModel} onChange={(e) => set("geminiImageModel", e.target.value)} />
         </Field>
       </div>
       <div className="mt-3">

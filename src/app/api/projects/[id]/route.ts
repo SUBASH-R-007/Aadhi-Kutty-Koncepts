@@ -15,7 +15,7 @@ const patchSchema = z.object({
   collegeName: z.string().optional(),
   brandColors: z.array(z.string()).optional(),
   textProvider: z.enum(["openai", "gemini", "mock"]).optional(),
-  imageProvider: z.enum(["openai", "mock"]).optional(),
+  imageProvider: z.enum(["openai", "gemini", "mock"]).optional(),
   imageStyle: z.string().optional(),
   templateId: z.string().nullable().optional(),
   creativeContextId: z.string().nullable().optional(),

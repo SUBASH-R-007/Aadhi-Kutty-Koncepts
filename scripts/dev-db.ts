@@ -27,8 +27,13 @@ async function main() {
   await client.connect();
   const exists = await client.query("SELECT 1 FROM pg_database WHERE datname = 'aadhi_studio'");
   if (exists.rowCount === 0) {
-    await client.query('CREATE DATABASE "aadhi_studio"');
-    console.log("Created database aadhi_studio");
+    // Force UTF-8 so emoji and other non-Latin-1 text (e.g. in project names)
+    // are storable. On Windows the cluster locale is often WIN1252, so we
+    // create from template0 with the C locale to override the encoding.
+    await client.query(
+      `CREATE DATABASE "aadhi_studio" WITH TEMPLATE template0 ENCODING 'UTF8' LC_COLLATE 'C' LC_CTYPE 'C'`,
+    );
+    console.log("Created database aadhi_studio (UTF8)");
   }
   await client.end();
   console.log("PostgreSQL ready: postgresql://aadhi:aadhi@localhost:5433/aadhi_studio");

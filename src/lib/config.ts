@@ -12,6 +12,7 @@ export const appConfigSchema = z.object({
   openaiTextModel: z.string(),
   geminiTextModel: z.string(),
   openaiImageModel: z.string(),
+  geminiImageModel: z.string(),
   negativeConstraints: z.array(z.string()),
 });
 export type AppConfigData = z.infer<typeof appConfigSchema>;
@@ -24,6 +25,7 @@ export async function getAppConfig(): Promise<AppConfigData> {
     openaiTextModel: env.OPENAI_TEXT_MODEL,
     geminiTextModel: env.GEMINI_TEXT_MODEL,
     openaiImageModel: env.OPENAI_IMAGE_MODEL,
+    geminiImageModel: env.GEMINI_IMAGE_MODEL,
     negativeConstraints: defaultNegativeConstraints,
   };
   const row = await prisma.appConfig.findUnique({ where: { key: CONFIG_KEY } });

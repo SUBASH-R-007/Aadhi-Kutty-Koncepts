@@ -35,15 +35,21 @@ export type VariantVersionDto = {
   createdAt: string;
 };
 
+export type CalloutDto = { type: string; body: string };
+export type KnowledgeCheckDto = { question: string; answer: string; kind: string };
+
 export type VariantDto = {
   id: string;
   level: "novice" | "advanced";
   title: string;
   learningObjective: string;
+  whyLearn: string;
   blocks: ContentBlock[];
+  callouts: CalloutDto[];
   keyTakeaway: string;
   exampleActivity: string;
   glossary: { term: string; definition: string }[];
+  knowledgeCheck: KnowledgeCheckDto[];
   sourceRefs: string[];
   visualBrief: string;
   aadhiRole: string;
@@ -105,6 +111,7 @@ export type ProjectDto = {
   pageWidth: number;
   pageHeight: number;
   collegeName: string;
+  logoAssetKey: string | null;
   brandColors: string[];
   textProvider: string;
   imageProvider: string;

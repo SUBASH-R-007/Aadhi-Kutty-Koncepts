@@ -29,7 +29,12 @@ export class MockTextProvider implements TextProvider {
   }
 
   async generatePage(input: PageGenInput): Promise<PageGenResult> {
-    const joined = input.chunks.map((c) => c.text).join("\n\n");
+    const joined = input.chunks
+      .map((c) => c.text)
+      .join("\n\n")
+      .replace(/(^|\n)#{1,6}\s*/g, "$1") // drop markdown headings
+      .replace(/[*_`>#]/g, "") // drop stray markdown markers
+      .replace(/^\s*[-•]\s*/gm, ""); // drop bullet markers
     const sentences = joined
       .replace(/\s+/g, " ")
       .split(/(?<=[.!?])\s+/)
@@ -42,7 +47,7 @@ export class MockTextProvider implements TextProvider {
       title: input.pageTitle,
       learningObjective: input.pageObjective || `Understand ${input.pageTitle}`,
       sourceRefs: refs,
-      visualBrief: `A single clear illustration of "${input.pageTitle}" for ${input.project.audience}; no text inside the image.`,
+      visualBrief: `A single friendly educational illustration of "${input.pageTitle}" for ${input.project.audience}; no text inside the image.`,
       aadhiRole: "Guides the learner by pointing at the core concept",
       aadhiPose: "pointing",
       aadhiExpression: "friendly-smile",
@@ -52,32 +57,64 @@ export class MockTextProvider implements TextProvider {
 
     const novice: PageVariantContent = {
       ...base,
+      whyLearn: insufficient
+        ? ""
+        : `You'll meet "${input.pageTitle}" whenever you deal with ${input.project.subject.toLowerCase()} in everyday life.`,
       blocks: insufficient
         ? [{ heading: "Not enough source material", body: "The uploaded source does not contain enough information for this page. Please add more material." }]
         : [
             { heading: "In simple terms", body: simplify(sentences.slice(0, 3).join(" ")) },
-            { heading: "Step by step", body: sentences.slice(3, 6).join(" ") || sentences.slice(0, 3).join(" ") },
+            { heading: "A little more", body: sentences.slice(3, 6).join(" ") || sentences.slice(0, 3).join(" ") },
+          ],
+      callouts: insufficient
+        ? []
+        : [
+            { type: "Wait, Why?", body: `Why does "${input.pageTitle}" matter? ${sentences[0] ?? ""}` },
+            { type: "Fun Fact", body: `The word "${terms[0] ?? input.pageTitle}" shows up a lot once you start noticing it.` },
           ],
       keyTakeaway: insufficient ? "More source material is needed." : `The key idea: ${sentences[0] ?? input.pageTitle}`,
       exampleActivity: insufficient
         ? ""
-        : `Try explaining "${input.pageTitle}" to a friend in one sentence, the way you would describe a daily-life situation.`,
+        : `Imagine explaining "${input.pageTitle}" to a friend using a daily-life situation — describe it in one sentence.`,
       glossary: terms.slice(0, 3).map((t) => ({ term: t, definition: `"${t}" as used in the source material for this page.` })),
+      knowledgeCheck: insufficient
+        ? []
+        : [
+            { question: `In one sentence, what is "${input.pageTitle}"?`, answer: sentences[0] ?? input.pageTitle, kind: "recall" as const },
+            { question: `True or false: ${input.pageTitle} is described in the source material.`, answer: "True.", kind: "understanding" as const },
+            { question: `Fill in the blank: ${input.pageTitle} relates to ______.`, answer: terms[0] ?? input.project.subject, kind: "recall" as const },
+          ],
     };
 
     const advanced: PageVariantContent = {
       ...base,
       aadhiPose: "holding-a-diagram",
       aadhiExpression: "focused",
+      whyLearn: insufficient
+        ? ""
+        : `In practice, "${input.pageTitle}" underpins real decisions in ${input.project.subject}; getting it right affects downstream outcomes.`,
       blocks: insufficient
         ? [{ heading: "Insufficient source", body: "The provided source chunks do not support an advanced treatment of this topic." }]
         : [
             { heading: "Mechanism and detail", body: sentences.slice(0, 5).join(" ") },
-            { heading: "Tradeoffs and caveats", body: sentences.slice(5, 9).join(" ") || "The source offers limited discussion of tradeoffs; treat edge cases with care." },
+            { heading: "Tradeoffs, caveats, and edge cases", body: sentences.slice(5, 9).join(" ") || "The source offers limited discussion of tradeoffs; treat edge cases with care and state assumptions explicitly." },
+          ],
+      callouts: insufficient
+        ? []
+        : [
+            { type: "Key Insight", body: `${sentences[1] ?? sentences[0] ?? input.pageTitle}` },
+            { type: "Common Pitfall", body: `Learners often overlook the edge cases of "${input.pageTitle}" — check the boundary conditions.` },
           ],
       keyTakeaway: insufficient ? "More source material is needed." : `Critical insight: ${sentences[1] ?? sentences[0] ?? input.pageTitle}`,
-      exampleActivity: insufficient ? "" : `Analyze how "${input.pageTitle}" behaves in an edge case described in the source, and justify your reasoning.`,
+      exampleActivity: insufficient ? "" : `Scenario: given a situation involving "${input.pageTitle}" described in the source, reason through how it behaves at an edge case and justify each step.`,
       glossary: terms.slice(0, 4).map((t) => ({ term: t, definition: `Domain usage of "${t}" per the source material.` })),
+      knowledgeCheck: insufficient
+        ? []
+        : [
+            { question: `Explain the mechanism behind "${input.pageTitle}" in your own words.`, answer: sentences.slice(0, 2).join(" "), kind: "application" as const },
+            { question: `What trade-off does "${input.pageTitle}" involve, per the source?`, answer: sentences[5] ?? "See the source discussion of trade-offs.", kind: "application" as const },
+            { question: `Challenge: construct an edge case where "${input.pageTitle}" behaves unexpectedly and justify it.`, answer: "Answers vary; must be grounded in the source.", kind: "challenge" as const },
+          ],
     };
 
     return { novice, advanced };

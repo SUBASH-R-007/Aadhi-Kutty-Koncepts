@@ -17,7 +17,7 @@ const createProjectSchema = z.object({
   collegeName: z.string().min(1),
   brandColors: z.array(z.string().regex(/^#[0-9a-fA-F]{6}$/)).max(6).default([]),
   textProvider: z.enum(["openai", "gemini", "mock"]).default("mock"),
-  imageProvider: z.enum(["openai", "mock"]).default("mock"),
+  imageProvider: z.enum(["openai", "gemini", "mock"]).default("mock"),
   imageStyle: z.string().default(""),
 });
 

@@ -123,9 +123,12 @@ function PageEditor({
     const base = Math.min(project.pageWidth, project.pageHeight);
     return estimateOverflow({
       title: draft.title,
+      whyLearn: draft.whyLearn,
       blocks: draft.blocks,
+      callouts: draft.callouts,
       keyTakeaway: draft.keyTakeaway,
       exampleActivity: draft.exampleActivity,
+      knowledgeCheck: draft.knowledgeCheck,
       bodyZonePx: { w: body.w * project.pageWidth, h: body.h * project.pageHeight },
       titleZonePx: { w: title.w * project.pageWidth, h: title.h * project.pageHeight },
       bodyFontSize: base * 0.021,
@@ -142,10 +145,13 @@ function PageEditor({
         content: {
           title: draft.title,
           learningObjective: draft.learningObjective,
+          whyLearn: draft.whyLearn,
           blocks: draft.blocks,
+          callouts: draft.callouts,
           keyTakeaway: draft.keyTakeaway,
           exampleActivity: draft.exampleActivity,
           glossary: draft.glossary,
+          knowledgeCheck: draft.knowledgeCheck,
           sourceRefs: draft.sourceRefs,
           visualBrief: draft.visualBrief,
           aadhiRole: draft.aadhiRole,
@@ -213,6 +219,13 @@ function PageEditor({
             <Field label="Learning objective" htmlFor="objective">
               <Input id="objective" value={draft.learningObjective} onChange={(e) => set("learningObjective", e.target.value)} />
             </Field>
+            <Field
+              label={level === "novice" ? "Why are we learning this?" : "Why are we studying this?"}
+              htmlFor="whylearn"
+              hint={level === "novice" ? "One short, relatable line." : "The real-world / industry / research case."}
+            >
+              <Textarea id="whylearn" rows={2} value={draft.whyLearn} onChange={(e) => set("whyLearn", e.target.value)} />
+            </Field>
 
             <fieldset className="flex flex-col gap-2">
               <legend className="text-xs font-medium text-slate-700">Content blocks</legend>
@@ -255,6 +268,43 @@ function PageEditor({
             </Field>
 
             <fieldset className="flex flex-col gap-2">
+              <legend className="text-xs font-medium text-slate-700">
+                Callouts {level === "novice" ? "(Pro-Tip / Fun Fact / Wait, Why?)" : "(Key Insight / Common Pitfall / Exam Tip)"}
+              </legend>
+              {draft.callouts.map((c, i) => (
+                <div key={i} className="flex gap-2">
+                  <Input
+                    aria-label={`Callout ${i + 1} type`}
+                    className="w-1/3"
+                    value={c.type}
+                    onChange={(e) => set("callouts", draft.callouts.map((x, j) => (j === i ? { ...x, type: e.target.value } : x)))}
+                  />
+                  <Textarea
+                    aria-label={`Callout ${i + 1} body`}
+                    rows={2}
+                    value={c.body}
+                    onChange={(e) => set("callouts", draft.callouts.map((x, j) => (j === i ? { ...x, body: e.target.value } : x)))}
+                  />
+                  <Button size="sm" variant="ghost" onClick={() => set("callouts", draft.callouts.filter((_, j) => j !== i))}>
+                    ✕
+                  </Button>
+                </div>
+              ))}
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() =>
+                  set("callouts", [
+                    ...draft.callouts,
+                    { type: level === "novice" ? "Pro-Tip" : "Key Insight", body: "" },
+                  ])
+                }
+              >
+                + Add callout
+              </Button>
+            </fieldset>
+
+            <fieldset className="flex flex-col gap-2">
               <legend className="text-xs font-medium text-slate-700">Glossary terms</legend>
               {draft.glossary.map((g, i) => (
                 <div key={i} className="flex gap-2">
@@ -276,6 +326,56 @@ function PageEditor({
               ))}
               <Button size="sm" variant="secondary" onClick={() => set("glossary", [...draft.glossary, { term: "", definition: "" }])}>
                 + Add term
+              </Button>
+            </fieldset>
+
+            <fieldset className="flex flex-col gap-2">
+              <legend className="text-xs font-medium text-slate-700">
+                Knowledge check {level === "novice" ? "(3–5 recall questions)" : "(application + challenge questions)"}
+              </legend>
+              {draft.knowledgeCheck.map((q, i) => (
+                <div key={i} className="rounded-md border border-slate-200 p-2">
+                  <Input
+                    aria-label={`Question ${i + 1}`}
+                    className="mb-1"
+                    placeholder="Question"
+                    value={q.question}
+                    onChange={(e) => set("knowledgeCheck", draft.knowledgeCheck.map((x, j) => (j === i ? { ...x, question: e.target.value } : x)))}
+                  />
+                  <div className="flex gap-2">
+                    <Input
+                      aria-label={`Answer ${i + 1}`}
+                      placeholder="Answer"
+                      value={q.answer}
+                      onChange={(e) => set("knowledgeCheck", draft.knowledgeCheck.map((x, j) => (j === i ? { ...x, answer: e.target.value } : x)))}
+                    />
+                    <Select
+                      aria-label={`Question ${i + 1} kind`}
+                      className="w-40"
+                      value={q.kind}
+                      onChange={(e) => set("knowledgeCheck", draft.knowledgeCheck.map((x, j) => (j === i ? { ...x, kind: e.target.value } : x)))}
+                    >
+                      {["recall", "understanding", "application", "challenge"].map((k) => (
+                        <option key={k} value={k}>{k}</option>
+                      ))}
+                    </Select>
+                    <Button size="sm" variant="ghost" onClick={() => set("knowledgeCheck", draft.knowledgeCheck.filter((_, j) => j !== i))}>
+                      ✕
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() =>
+                  set("knowledgeCheck", [
+                    ...draft.knowledgeCheck,
+                    { question: "", answer: "", kind: level === "novice" ? "recall" : "application" },
+                  ])
+                }
+              >
+                + Add question
               </Button>
             </fieldset>
 

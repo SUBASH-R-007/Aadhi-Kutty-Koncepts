@@ -57,25 +57,40 @@ npm run build       # production build
    instead of inventing content.
 3. **Content** — the provider plans pages from chunk previews, then writes each
    page **only from its assigned chunks** (large documents are never sent
-   whole). Every page gets a novice and an advanced variant with title,
-   objective, content blocks, key takeaway, example/activity, glossary,
-   source references (validated against real chunk refs — fabricated citations
-   are dropped), a visual brief, and Aadhi's role/pose/expression/placement.
-   The editor has a page navigator, novice/advanced toggle, text-overflow
-   estimation against the template zones, save status, version history with
-   restore, and **regenerate-this-page-only**.
+   whole). Every page gets a **novice** and an **advanced** variant, shaped
+   after the `basic-level-illustrated` and `advanced-level-illustrated` skills:
+   - **Novice** (basic tier): a one-line *Why are we learning this?*, 2–3 plain
+     blocks, exactly one everyday example, Pro-Tip / Fun Fact / Wait-Why
+     callouts, and a 3–5 question recall/understanding **Knowledge Check** with
+     answers. No comparisons, statistics, or edge cases.
+   - **Advanced** (deeper tier): a fuller *Why are we studying this?*,
+     mechanisms / trade-offs / edge cases, a scenario-based "apply it" prompt,
+     Key-Insight / Common-Pitfall / Exam-Tip callouts, and an
+     application-level Knowledge Check **plus** challenge problems.
+   - Both carry title, objective, glossary, key takeaway, source references
+     (validated against real chunk refs — fabricated citations are dropped), a
+     visual brief, and Aadhi's role/pose/expression/placement.
+   The editor has a page navigator, novice/advanced toggle, editors for every
+   field above (why-learn, blocks, callouts, glossary, knowledge check),
+   text-overflow estimation against the template zones, save status, version
+   history with restore, and **regenerate-this-page-only**.
 4. **Template** — upload a PNG/JPEG/SVG background (or use the default layout),
-   then drag/resize the nine safe zones (title, body, visual, Aadhi, logo,
-   header, footer, page number, source note). Saving zones creates a **new
-   template version**; templates are reusable across projects.
+   upload the **college logo** (composited into the logo safe zone on every
+   page, never redrawn by the image model), then drag/resize the nine safe
+   zones (title, body, visual, Aadhi, logo, header, footer, page number, source
+   note). Saving zones creates a **new template version**; templates are
+   reusable across projects.
 5. **Visuals** — for **approved** pages only: the illustration brief combines
    the approved content, character bible, selected creative-context version,
-   brand settings, and admin-editable negative constraints. The image model
-   never draws instructional text; the deterministic renderer (SVG + Sharp
-   behind a `PageRenderer` interface) typesets the approved text over the
-   template and illustration. Generate all pages or one, override Aadhi's pose
-   or the style per page, lock a good visual, compare versions, restore any
-   version.
+   brand settings, and admin-editable negative constraints, and is sent to the
+   chosen image provider (**OpenAI** or **Gemini**) with the uploaded **Aadhi
+   reference images** for mascot conditioning. The image model never draws
+   instructional text; the deterministic renderer (SVG + Sharp behind a
+   `PageRenderer` interface) typesets the approved text — why-learn, blocks,
+   colored callout boxes, key takeaway, apply-it, and the knowledge check — plus
+   the college logo over the template and illustration. Generate all pages or
+   one, override Aadhi's pose or the style per page, lock a good visual, compare
+   versions, restore any version.
 6. **Export** — novice, advanced, or both as PDF. Pages without a generated
    visual are composed deterministically from approved text so exports always
    succeed.
@@ -87,8 +102,11 @@ npm run build       # production build
   style, poses, expressions, accessories, forbidden changes, clear-space
   rules). Edit it in **Settings** — each save is a new version.
 - Upload approved **reference images** in Settings; they are attached to every
-  OpenAI image request (`images/edits` reference conditioning). The mock
-  provider ignores them.
+  real image request — OpenAI (`images/edits` reference conditioning) **and**
+  Gemini (`generateContent` inline reference parts) — so Aadhi stays the same
+  mascot on every page. The mock provider ignores them.
+- Aadhi's canon is the **purple-and-gold REC varsity look** (purple letterman
+  jacket, gold torch-"R" emblem, purple goggles); edit it in Settings.
 - Default negative constraints (no extra horns/limbs, no accidental text, no
   watermarks, no clothing changes, exactly one mascot, …) are editable by an
   administrator in Settings.
@@ -112,7 +130,8 @@ version 1 at `npm run db:seed`.
 - Swappable infrastructure behind interfaces:
   - `TextProvider` (`src/lib/providers/text`): OpenAI, Gemini, Mock
   - `ImageProvider` (`src/lib/providers/image`): OpenAI (`images/generations` +
-    `images/edits` for reference conditioning), Mock
+    `images/edits` for reference conditioning), Gemini (`generateContent` image
+    output with inline reference images), Mock
   - `ObjectStorage` (`src/lib/storage`): local disk (dev, served via
     `/api/assets`), S3-compatible (AWS/MinIO/R2)
   - `JobQueue` (`src/lib/queue`): in-process dev queue persisting jobs to the
@@ -120,8 +139,9 @@ version 1 at `npm run db:seed`.
   - `PageRenderer` (`src/lib/render`): SVG + Sharp compositor; a
     Playwright/HTML renderer can be swapped in
 - Model names are **configuration, not code**: env defaults
-  (`OPENAI_TEXT_MODEL`, `GEMINI_TEXT_MODEL`, `OPENAI_IMAGE_MODEL`) with runtime
-  admin overrides in **Settings** (stored in `AppConfig`).
+  (`OPENAI_TEXT_MODEL`, `GEMINI_TEXT_MODEL`, `OPENAI_IMAGE_MODEL`,
+  `GEMINI_IMAGE_MODEL`) with runtime admin overrides in **Settings** (stored in
+  `AppConfig`).
 
 ## Security posture
 

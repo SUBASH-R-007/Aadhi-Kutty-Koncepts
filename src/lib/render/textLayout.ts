@@ -36,9 +36,12 @@ export function linesHeightPx(lineCount: number, fontSizePx: number): number {
 
 export type OverflowInput = {
   title: string;
+  whyLearn?: string;
   blocks: { heading?: string; body: string }[];
+  callouts?: { type: string; body: string }[];
   keyTakeaway: string;
   exampleActivity: string;
+  knowledgeCheck?: { question: string }[];
   /** Pixel size of the body safe zone. */
   bodyZonePx: { w: number; h: number };
   titleZonePx: { w: number; h: number };
@@ -58,6 +61,10 @@ export type OverflowResult = {
 export function estimateOverflow(input: OverflowInput): OverflowResult {
   let used = 0;
   const gap = input.bodyFontSize * 0.9;
+  const bodyLines = (text: string) =>
+    linesHeightPx(wrapText(text, input.bodyZonePx.w, input.bodyFontSize).length, input.bodyFontSize);
+
+  if (input.whyLearn?.trim()) used += bodyLines(input.whyLearn) + gap;
   for (const block of input.blocks) {
     if (block.heading?.trim()) {
       used += linesHeightPx(
@@ -65,22 +72,17 @@ export function estimateOverflow(input: OverflowInput): OverflowResult {
         input.headingFontSize,
       );
     }
-    if (block.body.trim()) {
-      used += linesHeightPx(
-        wrapText(block.body, input.bodyZonePx.w, input.bodyFontSize).length,
-        input.bodyFontSize,
-      );
-    }
+    if (block.body.trim()) used += bodyLines(block.body);
     used += gap;
   }
+  for (const callout of input.callouts ?? []) {
+    if (callout.body.trim()) used += bodyLines(callout.body) + input.bodyFontSize * 1.6 + gap;
+  }
   for (const extra of [input.keyTakeaway, input.exampleActivity]) {
-    if (extra.trim()) {
-      used +=
-        linesHeightPx(
-          wrapText(extra, input.bodyZonePx.w, input.bodyFontSize).length,
-          input.bodyFontSize,
-        ) + gap;
-    }
+    if (extra.trim()) used += bodyLines(extra) + gap;
+  }
+  for (const item of input.knowledgeCheck ?? []) {
+    if (item.question.trim()) used += bodyLines(item.question) + gap * 0.6;
   }
   const titleUsed = linesHeightPx(
     wrapText(input.title, input.titleZonePx.w, input.titleFontSize).length,

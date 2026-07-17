@@ -19,6 +19,7 @@ model Project {
   pageWidth         Int              @default(1920)
   pageHeight        Int              @default(1080)
   collegeName       String
+  logoAssetKey      String? // college logo, composited into the template logo zone
   brandColors       Json             @default("[]") // string[] hex
   textProvider      String           @default("mock") // openai | gemini | mock
   imageProvider     String           @default("mock") // openai | mock
@@ -81,10 +82,13 @@ model PageVariant {
   level              String // novice | advanced
   title              String               @default("")
   learningObjective  String               @default("")
+  whyLearn           String               @default("") // "Why are we learning/studying this?" motivation
   blocks             Json                 @default("[]") // {heading?, body}[]
+  callouts           Json                 @default("[]") // {type, body}[] — Pro-Tip / Fun Fact / Wait Why / Key Insight / Common Pitfall / Exam Tip
   keyTakeaway        String               @default("")
   exampleActivity    String               @default("")
   glossary           Json                 @default("[]") // {term, definition}[]
+  knowledgeCheck     Json                 @default("[]") // {question, answer, kind}[]
   sourceRefs         Json                 @default("[]") // string[]
   visualBrief        String               @default("")
   aadhiRole          String               @default("")

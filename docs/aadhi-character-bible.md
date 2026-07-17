@@ -18,18 +18,19 @@ surprising facts, and celebrates learner progress.
 
 ## Physical canon
 
-- **Proportions:** Bipedal, roughly 5 heads tall, slim athletic build, digitigrade legs ending in neat black hooves. Four fingers plus thumb on each hand.
-- **Horns:** Two long spiral (helical) horns, symmetric, 2.5 twists, dark charcoal, rising in a shallow V. Never asymmetric, never broken, never more than two.
-- **Coat / markings:** Rich dark brown-black upper body; white underside, chest, and inner limbs; white eye-rings; white muzzle patch; white chin. Markings are fixed and must be identical on every page.
-- **Face & eyes:** Large friendly almond eyes, dark irises with a single white highlight; small dark nose; gentle smile by default.
-- **Default clothing:** College uniform — navy blazer with the college crest on the left breast pocket, white shirt, sand-colored chinos. No shoes (hooves).
-- **Color palette:** Coat #2B1D16 / #171003, white #FAF7F2, blazer navy #1F3A5F, shirt #FFFFFF, chinos #D9C7A0, accent (crest/tie) #E8A13D.
+- **Proportions:** Bipedal, roughly 5 heads tall, slim athletic build, digitigrade legs ending in neat dark hooves. Four fingers plus thumb on each hand.
+- **Horns:** Two long ridged, gently spiraled blackbuck horns, symmetric, angled back in a shallow V, warm grey-brown. Never asymmetric, never broken, never more than two.
+- **Coat / markings:** Warm tan-brown coat; cream muzzle, inner ears, chest and brow; slightly darker brown around the eyes; white chin. Markings are fixed and identical on every page.
+- **Face & eyes:** Large friendly almond eyes, dark irises with a single white highlight; small dark nose; gentle smile by default; sporty purple goggles rest on the brow.
+- **Default clothing:** Rajalakshmi Engineering College varsity kit — purple letterman jacket with gold trim and ribbed cuffs, a gold torch-"R" college emblem on the left chest, matching purple track/jogger pants, and purple-and-gold sneakers.
+- **Color palette:** Coat #A9744F / #6B4226, cream #F3E4CE, college purple #5A277F / #7A3FA0, college gold #F4A81D, paper #FAF7F2.
 
 ## Illustration style
 
-Flat vector illustration with soft shading, clean 2px-equivalent outlines,
-minimal gradients, friendly rounded shapes. Consistent line weight. No
-photorealism, no 3D render look, no anime style.
+Friendly, approachable 3D Pixar-style character render with soft lighting and
+clean shapes (or a matching flat-vector treatment for diagram pages).
+Consistent look across pages. No photorealism of a real animal, no anime, no
+gritty style.
 
 ## Common poses
 

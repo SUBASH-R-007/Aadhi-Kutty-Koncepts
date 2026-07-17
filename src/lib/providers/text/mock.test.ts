@@ -47,6 +47,16 @@ describe("MockTextProvider", () => {
     expect(result.novice.sourceRefs).toEqual(["notes.pdf p.1"]);
     expect(result.advanced.sourceRefs).toEqual(["notes.pdf p.1"]);
     expect(result.novice.insufficientSource).toBe(false);
+
+    // Illustrated-skills structure: novice = basic tier, advanced = deeper tier.
+    expect(result.novice.whyLearn).not.toBe("");
+    expect(result.novice.callouts.length).toBeGreaterThan(0);
+    expect(result.novice.callouts.map((c) => c.type)).toContain("Fun Fact");
+    expect(result.novice.knowledgeCheck.length).toBeGreaterThanOrEqual(3);
+    expect(result.novice.knowledgeCheck.every((q) => q.kind === "recall" || q.kind === "understanding")).toBe(true);
+
+    expect(result.advanced.callouts.map((c) => c.type)).toContain("Key Insight");
+    expect(result.advanced.knowledgeCheck.some((q) => q.kind === "challenge")).toBe(true);
   });
 
   it("flags insufficient source material instead of inventing content", async () => {
