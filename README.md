@@ -10,15 +10,25 @@ pages with deterministic typography, and exports novice/advanced/both as PDF.
 
 ## Quick start
 
-Prerequisites: **Node 20+**, **Docker** (for local PostgreSQL).
+Prerequisites: **Node 20+**, plus PostgreSQL — via **Docker** or the no-Docker
+embedded server below.
 
 ```bash
 cp .env.example .env          # defaults work out of the box
 npm install
-npm run db:up                 # starts PostgreSQL 16 on port 5433 (docker compose)
-npm run db:migrate            # prisma migrate dev (also runs the seed)
+
+# Start PostgreSQL on port 5433 — pick ONE:
+npm run db:up                 # Docker: docker compose up -d db
+npm run db:local              # No Docker: real embedded PostgreSQL (leave running)
+
+npm run db:migrate            # prisma migrate dev
+npm run db:seed               # seed Aadhi bible + default creative context
 npm run dev                   # http://localhost:3000
 ```
+
+> `npm run db:local` downloads a self-contained PostgreSQL binary on first run
+> and stores data in `.pgdata/` (git-ignored). Use it when Docker isn't
+> available — this is how the app was verified end-to-end on Windows.
 
 No API keys are required to try the full workflow: the **mock** text and image
 providers are deterministic and keyless. To use real providers, set
