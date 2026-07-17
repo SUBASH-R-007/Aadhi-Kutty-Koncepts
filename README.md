@@ -160,3 +160,4 @@ src/app/…                   dashboard, wizard, source, editor, template,
 e2e/smoke.spec.ts           Playwright full-workflow test (mock providers)
 docs/                       seed docs: character bible & creative context
 ```
+"# Aadhi-Kutty-Koncepts" 
