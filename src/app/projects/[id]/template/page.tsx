@@ -155,7 +155,7 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
                 id="tfile"
                 type="file"
                 accept=".png,.jpg,.jpeg,.svg"
-                className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-700 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
+                className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-purple-700 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
               />
             </Field>
@@ -212,7 +212,7 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
               type="file"
               accept=".png,.jpg,.jpeg,.svg"
               aria-label="Upload college logo"
-              className="block text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-700 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
+              className="block text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-purple-700 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) void uploadLogo(file);
@@ -247,7 +247,7 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
               type="file"
               accept=".png,.jpg,.jpeg,.svg"
               aria-label="Upload mascot image"
-              className="block text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-700 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
+              className="block text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-purple-700 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) void uploadMascot(file);

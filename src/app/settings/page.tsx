@@ -217,7 +217,7 @@ function CharacterBibleCard() {
         type="file"
         accept=".png,.jpg,.jpeg"
         aria-label="Upload Aadhi reference image"
-        className="block text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-700 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-white"
+        className="block text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-purple-700 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-white"
         onChange={(e) => {
           const file = e.target.files?.[0];
           if (file) void uploadReference(file);

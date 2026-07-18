@@ -27,7 +27,7 @@ export function StepNav({ projectId }: { projectId: string }) {
             aria-current={active ? "page" : undefined}
             className={cx(
               "rounded-md px-3 py-1.5 text-sm font-medium",
-              active ? "bg-indigo-700 text-white" : "text-slate-700 hover:bg-slate-100",
+              active ? "bg-purple-700 text-white" : "text-slate-700 hover:bg-slate-100",
             )}
           >
             {step.label}

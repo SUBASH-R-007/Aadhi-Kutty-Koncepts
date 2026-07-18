@@ -45,7 +45,7 @@ export function JobProgress({
       </div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
         <div
-          className={`h-full transition-all ${job.status === "failed" ? "bg-red-500" : "bg-indigo-600"}`}
+          className={`h-full transition-all ${job.status === "failed" ? "bg-red-500" : "bg-purple-600"}`}
           style={{ width: `${Math.max(job.progress, 4)}%` }}
         />
       </div>

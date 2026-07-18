@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+:root {
+  /* Rajalakshmi Engineering College brand */
+  --brand: #5a277f;
+  --brand-dark: #4b2072;
+  --brand-light: #f4eefb;
+  --gold: #f4a81d;
+  --studio: #e9e9ec;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
+  /* subtle branded page wash */
+  background-color: #f6f4fb;
+  background-image:
+    radial-gradient(60rem 60rem at 110% -10%, rgba(90, 39, 127, 0.08), transparent 60%),
+    radial-gradient(40rem 40rem at -10% 10%, rgba(244, 168, 29, 0.06), transparent 55%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(90, 39, 127, 0.18);
 }

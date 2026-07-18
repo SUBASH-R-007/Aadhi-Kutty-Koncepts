@@ -107,7 +107,7 @@ export default async function ProjectOverviewPage({
             <li key={step.href}>
               <Link
                 href={step.href}
-                className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm hover:border-indigo-300"
+                className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm hover:border-purple-300"
               >
                 <span className="flex items-center gap-3">
                   <span

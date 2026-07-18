@@ -18,17 +18,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   ref,
 ) {
   const styles = {
-    primary: "bg-indigo-700 text-white hover:bg-indigo-800 disabled:bg-indigo-300",
+    primary: "bg-[#5A277F] text-white shadow-sm hover:bg-[#4B2072] disabled:bg-purple-300",
     secondary:
       "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50 disabled:text-slate-400",
     danger: "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-300",
-    ghost: "text-indigo-700 hover:bg-indigo-50 disabled:text-slate-400",
+    ghost: "text-[#5A277F] hover:bg-purple-50 disabled:text-slate-400",
   }[variant];
   return (
     <button
       ref={ref}
       className={cx(
-        "inline-flex items-center gap-1.5 rounded-md font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed",
+        "inline-flex items-center gap-1.5 rounded-md font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5A277F] disabled:cursor-not-allowed",
         size === "sm" ? "px-2.5 py-1.5 text-xs" : "px-4 py-2 text-sm",
         styles,
         className,
@@ -65,7 +65,7 @@ export function Field({ label, hint, children, htmlFor }: { label: string; hint?
 }
 
 const inputClass =
-  "w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-slate-100";
+  "w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 disabled:bg-slate-100";
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
   function Input({ className, ...props }, ref) {
@@ -91,7 +91,7 @@ export function Badge({ children, tone = "slate" }: { children: ReactNode; tone?
     green: "bg-green-100 text-green-800",
     amber: "bg-amber-100 text-amber-800",
     red: "bg-red-100 text-red-800",
-    indigo: "bg-indigo-100 text-indigo-800",
+    indigo: "bg-purple-100 text-purple-800",
   }[tone];
   return (
     <span className={cx("inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium", tones)}>
@@ -103,7 +103,7 @@ export function Badge({ children, tone = "slate" }: { children: ReactNode; tone?
 export function Spinner({ label }: { label?: string }) {
   return (
     <span className="inline-flex items-center gap-2 text-sm text-slate-600" role="status">
-      <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-indigo-600" aria-hidden />
+      <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-purple-600" aria-hidden />
       {label ?? "Working…"}
     </span>
   );

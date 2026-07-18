@@ -61,7 +61,7 @@ export default function VisualsPage({ params }: { params: Promise<{ id: string }
                 key={l}
                 onClick={() => setLevel(l)}
                 aria-pressed={level === l}
-                className={`rounded px-3 py-1 text-sm font-medium capitalize ${level === l ? "bg-indigo-700 text-white" : "text-slate-700"}`}
+                className={`rounded px-3 py-1 text-sm font-medium capitalize ${level === l ? "bg-purple-700 text-white" : "text-slate-700"}`}
               >
                 {l}
               </button>
@@ -245,7 +245,7 @@ function PageVisualCard({
             <button
               key={v.id}
               onClick={() => setCompareId(v.id === compareId ? null : v.id)}
-              className={`rounded border px-2 py-0.5 ${v.id === page.activeVisualId ? "border-indigo-400 bg-indigo-50 text-indigo-800" : "border-slate-200 hover:bg-slate-50"}`}
+              className={`rounded border px-2 py-0.5 ${v.id === page.activeVisualId ? "border-purple-400 bg-purple-50 text-purple-800" : "border-slate-200 hover:bg-slate-50"}`}
             >
               v{v.version}
             </button>

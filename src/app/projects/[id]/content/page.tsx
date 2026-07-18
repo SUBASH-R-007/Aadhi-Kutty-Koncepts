@@ -56,7 +56,7 @@ export default function ContentEditorPage({ params }: { params: Promise<{ id: st
                 aria-current={i === pageIndex ? "page" : undefined}
                 className={`h-8 w-8 rounded-md text-xs font-semibold ${
                   i === pageIndex
-                    ? "bg-indigo-700 text-white"
+                    ? "bg-purple-700 text-white"
                     : variant?.approvedAt
                       ? "bg-green-100 text-green-800 hover:bg-green-200"
                       : "bg-slate-100 text-slate-700 hover:bg-slate-200"
@@ -74,7 +74,7 @@ export default function ContentEditorPage({ params }: { params: Promise<{ id: st
               key={l}
               onClick={() => setLevel(l)}
               aria-pressed={level === l}
-              className={`rounded px-3 py-1 text-sm font-medium capitalize ${level === l ? "bg-indigo-700 text-white" : "text-slate-700"}`}
+              className={`rounded px-3 py-1 text-sm font-medium capitalize ${level === l ? "bg-purple-700 text-white" : "text-slate-700"}`}
             >
               {l}
             </button>

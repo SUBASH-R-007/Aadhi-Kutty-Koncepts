@@ -102,7 +102,7 @@ export default function SourcePage({ params }: { params: Promise<{ id: string }>
             type="file"
             accept=".txt,.md,.markdown,.pdf,.docx,.pptx"
             aria-label="Upload source document"
-            className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-700 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-indigo-800"
+            className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-purple-700 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-purple-800"
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) void submitFile(file);
@@ -217,7 +217,7 @@ function SourceCard({ source, onChanged }: { source: SourceDto; onChanged: () =>
         </div>
       ) : (
         <details className="mt-2">
-          <summary className="cursor-pointer text-sm font-medium text-indigo-700">
+          <summary className="cursor-pointer text-sm font-medium text-purple-700">
             Review extracted content ({source.extractedText.length.toLocaleString()} chars)
           </summary>
           <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap rounded bg-slate-50 p-3 text-xs text-slate-700">

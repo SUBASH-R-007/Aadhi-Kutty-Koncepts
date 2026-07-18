@@ -86,7 +86,7 @@ export default function ExportPage({ params }: { params: Promise<{ id: string }>
                 <a
                   href={assetUrl(a.assetKey)}
                   download
-                  className="font-medium text-indigo-700 hover:underline"
+                  className="font-medium text-purple-700 hover:underline"
                 >
                   Download
                 </a>
