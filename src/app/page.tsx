@@ -31,6 +31,8 @@ export default async function DashboardPage() {
               "linear-gradient(90deg, rgba(233,233,236,0) 26%, rgba(75,32,114,0.55) 44%, rgba(75,32,114,0.96) 60%, #4B2072 100%)",
           }}
         />
+        {/* Extra darkening on small screens where the copy overlaps the mascot */}
+        <div className="absolute inset-0 bg-[#4B2072]/45 sm:hidden" />
         <div className="relative z-10 ml-auto flex min-h-[340px] max-w-xl flex-col justify-center gap-4 p-8 text-right sm:min-h-[400px] sm:p-12">
           <span className="ml-auto inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white ring-1 ring-white/25">
             <span className="h-1.5 w-1.5 rounded-full bg-[#F4A81D]" />
