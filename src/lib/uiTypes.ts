@@ -112,6 +112,7 @@ export type ProjectDto = {
   pageHeight: number;
   collegeName: string;
   logoAssetKey: string | null;
+  mascotAssetKey: string | null;
   brandColors: string[];
   textProvider: string;
   imageProvider: string;

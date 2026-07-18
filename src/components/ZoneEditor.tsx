@@ -16,9 +16,28 @@ const zoneColors: Record<ZoneKey, string> = {
   sourceNote: "#92400e",
 };
 
+const MIN_W = 0.03;
+const MIN_H = 0.02;
+
+/** Resize directions — any combination of edges (n/s/e/w). */
+type Dir = "n" | "s" | "e" | "w" | "nw" | "ne" | "sw" | "se";
+
+/** Handle positions + cursors for dynamic, any-direction resizing. */
+const handles: { dir: Dir; style: React.CSSProperties; cursor: string }[] = [
+  { dir: "nw", style: { left: 0, top: 0 }, cursor: "nwse-resize" },
+  { dir: "ne", style: { right: 0, top: 0 }, cursor: "nesw-resize" },
+  { dir: "sw", style: { left: 0, bottom: 0 }, cursor: "nesw-resize" },
+  { dir: "se", style: { right: 0, bottom: 0 }, cursor: "nwse-resize" },
+  { dir: "n", style: { left: "50%", top: 0, transform: "translateX(-50%)" }, cursor: "ns-resize" },
+  { dir: "s", style: { left: "50%", bottom: 0, transform: "translateX(-50%)" }, cursor: "ns-resize" },
+  { dir: "e", style: { right: 0, top: "50%", transform: "translateY(-50%)" }, cursor: "ew-resize" },
+  { dir: "w", style: { left: 0, top: "50%", transform: "translateY(-50%)" }, cursor: "ew-resize" },
+];
+
 /**
- * Safe-zone editor: drag to move, drag the corner handle to resize.
- * Coordinates are normalized (0..1) against the template dimensions.
+ * Safe-zone editor: drag to move, drag any edge or corner handle to resize
+ * dynamically from any direction. Coordinates are normalized (0..1) against
+ * the template dimensions.
  */
 export function ZoneEditor({
   zones,
@@ -38,20 +57,23 @@ export function ZoneEditor({
   const drag = useRef<{
     key: ZoneKey;
     mode: "move" | "resize";
+    dir?: Dir;
     startX: number;
     startY: number;
     zone: Zone;
   } | null>(null);
 
   const aspect = height / width;
+  // The illustration ("visual") zone is not editable in the template section.
+  const editableKeys = zoneKeys.filter((key) => key !== "visual");
 
-  function pointerDown(e: React.PointerEvent, key: ZoneKey, mode: "move" | "resize") {
+  function pointerDown(e: React.PointerEvent, key: ZoneKey, mode: "move" | "resize", dir?: Dir) {
     e.preventDefault();
     e.stopPropagation();
     const zone = zones[key];
     if (!zone) return;
     setActive(key);
-    drag.current = { key, mode, startX: e.clientX, startY: e.clientY, zone: { ...zone } };
+    drag.current = { key, mode, dir, startX: e.clientX, startY: e.clientY, zone: { ...zone } };
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
   }
 
@@ -62,13 +84,27 @@ export function ZoneEditor({
     const rect = el.getBoundingClientRect();
     const dx = (e.clientX - d.startX) / rect.width;
     const dy = (e.clientY - d.startY) / rect.height;
-    const z = { ...d.zone };
+    const d0 = d.zone;
+    let z = { ...d0 };
     if (d.mode === "move") {
-      z.x = clamp(d.zone.x + dx, 0, 1 - z.w);
-      z.y = clamp(d.zone.y + dy, 0, 1 - z.h);
+      z.x = clamp(d0.x + dx, 0, 1 - d0.w);
+      z.y = clamp(d0.y + dy, 0, 1 - d0.h);
     } else {
-      z.w = clamp(d.zone.w + dx, 0.03, 1 - z.x);
-      z.h = clamp(d.zone.h + dy, 0.02, 1 - z.y);
+      const dir = d.dir ?? "se";
+      const right = d0.x + d0.w;
+      const bottom = d0.y + d0.h;
+      let { x, y, w, h } = d0;
+      if (dir.includes("e")) w = clamp(d0.w + dx, MIN_W, 1 - d0.x);
+      if (dir.includes("s")) h = clamp(d0.h + dy, MIN_H, 1 - d0.y);
+      if (dir.includes("w")) {
+        x = clamp(d0.x + dx, 0, right - MIN_W);
+        w = right - x;
+      }
+      if (dir.includes("n")) {
+        y = clamp(d0.y + dy, 0, bottom - MIN_H);
+        h = bottom - y;
+      }
+      z = { x, y, w, h };
     }
     onChange({ ...zones, [d.key]: z });
   }
@@ -89,10 +125,11 @@ export function ZoneEditor({
         onPointerMove={pointerMove}
         onPointerUp={pointerUp}
       >
-        {zoneKeys.map((key) => {
+        {editableKeys.map((key) => {
           const zone = zones[key];
           if (!zone) return null;
           const color = zoneColors[key];
+          const isActive = active === key;
           return (
             <div
               key={key}
@@ -107,8 +144,8 @@ export function ZoneEditor({
                 width: `${zone.w * 100}%`,
                 height: `${zone.h * 100}%`,
                 borderColor: color,
-                backgroundColor: `${color}${active === key ? "33" : "1a"}`,
-                zIndex: active === key ? 10 : 1,
+                backgroundColor: `${color}${isActive ? "33" : "1a"}`,
+                zIndex: isActive ? 10 : 1,
               }}
             >
               <span
@@ -117,20 +154,23 @@ export function ZoneEditor({
               >
                 {key}
               </span>
-              <span
-                role="button"
-                aria-label={`Resize ${key} zone`}
-                onPointerDown={(e) => pointerDown(e, key, "resize")}
-                className="absolute bottom-0 right-0 h-3 w-3 cursor-se-resize"
-                style={{ backgroundColor: color }}
-              />
+              {handles.map((handle) => (
+                <span
+                  key={handle.dir}
+                  role="button"
+                  aria-label={`Resize ${key} zone (${handle.dir})`}
+                  onPointerDown={(e) => pointerDown(e, key, "resize", handle.dir)}
+                  className="absolute h-2.5 w-2.5 rounded-full border border-white"
+                  style={{ ...handle.style, backgroundColor: color, cursor: handle.cursor }}
+                />
+              ))}
             </div>
           );
         })}
       </div>
       <p className="text-xs text-slate-500">
-        Drag a zone to move it; drag its bottom-right corner to resize. Zones:
-        title, body (main content), visual (illustration), aadhi (mascot), logo,
+        Drag a zone to move it; drag any edge or corner handle to resize it
+        dynamically. Zones: title, body (main content), aadhi (mascot), logo,
         header, footer, page number, source note.
       </p>
     </div>

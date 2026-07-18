@@ -205,6 +205,14 @@ export async function composePage(
       logoImage = undefined;
     }
   }
+  let mascotImage: Buffer | undefined;
+  if (project.mascotAssetKey) {
+    try {
+      mascotImage = await storage.get(project.mascotAssetKey);
+    } catch {
+      mascotImage = undefined;
+    }
+  }
 
   const spec: RenderSpec = {
     width: project.pageWidth,
@@ -213,6 +221,7 @@ export async function composePage(
     backgroundImage,
     illustrationPng,
     logoImage,
+    mascotImage,
     zones,
     title: variant.title,
     whyLearn: variant.whyLearn,

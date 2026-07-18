@@ -20,6 +20,7 @@ model Project {
   pageHeight        Int              @default(1080)
   collegeName       String
   logoAssetKey      String? // college logo, composited into the template logo zone
+  mascotAssetKey    String? // Aadhi mascot image, composited into the template aadhi zone
   brandColors       Json             @default("[]") // string[] hex
   textProvider      String           @default("mock") // openai | gemini | mock
   imageProvider     String           @default("mock") // openai | mock

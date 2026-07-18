@@ -95,6 +95,31 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
     }
   }
 
+  async function uploadMascot(file: File) {
+    setBusy(true);
+    setError(null);
+    try {
+      const form = new FormData();
+      form.set("file", file);
+      await upload(`/api/projects/${id}/mascot`, form);
+      await reload();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Mascot image upload failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function removeMascot() {
+    setError(null);
+    try {
+      await del(`/api/projects/${id}/mascot`);
+      await reload();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not remove mascot image");
+    }
+  }
+
   async function saveZones() {
     if (!project?.template) return;
     setBusy(true);
@@ -191,6 +216,41 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) void uploadLogo(file);
+                e.target.value = "";
+              }}
+            />
+          )}
+        </div>
+      </Card>
+
+      <Card title="Mascot image">
+        <p className="mb-2 text-sm text-slate-600">
+          PNG / JPEG / SVG. Composited deterministically into the template&apos;s{" "}
+          <strong>Aadhi</strong> safe zone on every page, fitted to the zone so it never overlaps
+          other content.
+        </p>
+        <div className="flex items-center gap-4">
+          {project.mascotAssetKey ? (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={assetUrl(project.mascotAssetKey)}
+                alt="Aadhi mascot"
+                className="h-16 rounded border border-slate-200 bg-white object-contain p-1"
+              />
+              <Button size="sm" variant="danger" onClick={removeMascot}>
+                Remove mascot image
+              </Button>
+            </>
+          ) : (
+            <input
+              type="file"
+              accept=".png,.jpg,.jpeg,.svg"
+              aria-label="Upload mascot image"
+              className="block text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-700 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) void uploadMascot(file);
                 e.target.value = "";
               }}
             />

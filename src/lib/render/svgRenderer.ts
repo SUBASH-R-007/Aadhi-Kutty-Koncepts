@@ -36,6 +36,15 @@ export class SharpSvgRenderer implements PageRenderer {
       parts.push(img(fitted, z.x, z.y, z.w, z.h));
     }
 
+    if (spec.mascotImage && spec.zones.aadhi) {
+      const z = px(spec.zones.aadhi);
+      const fitted = await sharp(spec.mascotImage)
+        .resize(Math.round(z.w), Math.round(z.h), { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+        .png()
+        .toBuffer();
+      parts.push(img(fitted, z.x, z.y, z.w, z.h));
+    }
+
     if (spec.logoImage && spec.zones.logo) {
       const z = px(spec.zones.logo);
       const fitted = await sharp(spec.logoImage)

@@ -9,6 +9,8 @@ export type RenderSpec = {
   illustrationPng?: Buffer;
   /** College logo (PNG/JPEG/SVG bytes) drawn into the logo zone. */
   logoImage?: Buffer;
+  /** Aadhi mascot image (PNG/JPEG/SVG bytes) drawn into the aadhi zone. */
+  mascotImage?: Buffer;
   zones: Zones;
   title: string;
   whyLearn: string;
